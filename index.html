@@ -1,0 +1,102 @@
+<!DOCTYPE html><html lang="en"><head><script src="https://code.jquery.com/jquery-1.11.3.min.js"></script><script src="jquery.stopwatch.js"></script><style>span {
+  padding: 2px;
+}
+.done {
+  background-color: #99F;
+}
+
+#topic, #out {
+  font-size: x-large;
+}
+</style></head><body><section><h2 id="watch">00:00:00</h2><h3>type the following characters</h3><div id="topic"></div><div id="out"></div><textarea id="area" cols="80" rows="20"></textarea></section></body></html><script>var time = 0;
+var cur = 0;
+var els;
+window.onload = function() {
+  var strs = [
+    '-',
+    '\'',
+    '"',
+    '>',
+    ')',
+    '(',
+    '$',
+    ';',
+    '*',
+    '&',
+    ':',
+    '[',
+    ']',
+    '\\',
+    '{',
+    '}',
+    '+',
+    '0',
+    '9',
+    ];
+
+  function isCharacterKeyPress(evt) {
+    if (typeof evt.which == "undefined") {
+      // This is IE, which only fires keypress events for printable keys
+      return true;
+    } else if (typeof evt.which == "number" && evt.which > 0) {
+      // In other browsers except old versions of WebKit, evt.which is
+      // only greater than zero if the keypress is a printable key.
+      // We need to filter out backspace and ctrl/alt/meta key combinations
+      return !evt.ctrlKey && !evt.metaKey && !evt.altKey && evt.which != 8;
+    }
+    return false;
+  }
+
+  var onKeyUp = function(evt) {
+    if (time == 0) {
+      $('#watch').stopwatch().stopwatch('start');
+      time = 1;
+    }
+    if (!isCharacterKeyPress(evt)) {
+      console.log("skip");
+      return false;
+    }
+    var area = document.getElementById("area");
+    var out = document.getElementById("out");
+    var text = area.value.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;");
+    //.replace(/"/g, "&quot;");
+
+    var el = document.getElementById("v"+cur);
+
+    if (el.innerHTML == text) {
+      el.className = 'done';
+      out.appendChild(el);
+      if (cur == (els.length - 1)) {
+        $('#watch').stopwatch().stopwatch('stop');
+        $('#watch').addClass('done');
+        return false;
+      }
+      cur++;
+    } else {
+      console.log('el: ' + el.innerHTML);
+      console.log('in: ' + text);
+    }
+    area.value = "";
+  }
+  var genStrs = function(num) {
+    var out = [];
+    for (i = 0; i < num; i++) {
+      out.push(strs[Math.floor(Math.random() * strs.length)]);
+    }
+    return out;
+  }
+  var el = document.createElement("span");
+  var topic = document.getElementById("topic");
+
+
+  els = genStrs(30);
+  for (i = 0; i < els.length; i++) {
+    var el = document.createElement("span");
+    el.id = "v" + i;
+    el.innerHTML = els[i];
+    topic.appendChild(el);
+  }
+  document.getElementById('area').addEventListener("keyup", onKeyUp, false);
+
+
+};</script>
