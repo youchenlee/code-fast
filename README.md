@@ -2,6 +2,10 @@ Coders' typing practice
 
 This was just for fun.
 
+## Demo
+
+ * http://youchenlee.github.io/code-fast/
+
 
 ## Credits
 
